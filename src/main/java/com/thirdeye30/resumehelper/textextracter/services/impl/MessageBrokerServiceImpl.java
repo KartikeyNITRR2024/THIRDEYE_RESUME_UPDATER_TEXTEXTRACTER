@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import com.thirdeye30.resumehelper.textextracter.configs.MessageBrokerConfig;
 import com.thirdeye30.resumehelper.textextracter.dtos.Message;
+import com.thirdeye30.resumehelper.textextracter.dtos.ResumeMailPayload;
 import com.thirdeye30.resumehelper.textextracter.dtos.TextExtracterPayload;
 import com.thirdeye30.resumehelper.textextracter.externalcontollers.MessageBrokerClient;
 import com.thirdeye30.resumehelper.textextracter.services.MessageBrokerService;
@@ -52,7 +53,7 @@ public class MessageBrokerServiceImpl implements MessageBrokerService {
     }
     
     @Override
-	public List<Message<TextExtracterPayload>> getMessage(String topicName)
+	public List<Message<TextExtracterPayload>> getTextExtracterPayloadMessage(String topicName)
 	{
 		List<Message<TextExtracterPayload>> messages = new ArrayList<>();
 		if(!messageBrokerConfig.getTopics().containsKey(topicName))
@@ -60,7 +61,31 @@ public class MessageBrokerServiceImpl implements MessageBrokerService {
     		throw new RuntimeException("Does not have any topic with topic name "+topicName);
     	}
 		try {
-    		ResponseEntity<List<Message<TextExtracterPayload>>> response = messageBroker.getMessages(topicName, messageBrokerConfig.getTopics().get(topicName).getTopicKey(), queries);
+    		ResponseEntity<List<Message<TextExtracterPayload>>> response = messageBroker.getTextExtracterPayloadMessages(topicName, messageBrokerConfig.getTopics().get(topicName).getTopicKey(), queries);
+    		if (response.getStatusCode().equals(HttpStatus.OK)) {
+    			messages = response.getBody();
+                log.info("Successfully received messages from message broker with topic name "+topicName);
+            }
+    		else
+    		{
+    		    throw new RuntimeException("Failed to recive messages from message broker with topic name "+topicName+" "+response.getBody());
+    		}
+    	} catch (Exception e) {
+    		log.info("Failed to read data");
+        }
+		return messages;
+	}
+    
+    @Override
+	public List<Message<ResumeMailPayload>> getResumeMailPayloadMessage(String topicName)
+	{
+		List<Message<ResumeMailPayload>> messages = new ArrayList<>();
+		if(!messageBrokerConfig.getTopics().containsKey(topicName))
+    	{
+    		throw new RuntimeException("Does not have any topic with topic name "+topicName);
+    	}
+		try {
+    		ResponseEntity<List<Message<ResumeMailPayload>>> response = messageBroker.getResumeMailPayloadMessages(topicName, messageBrokerConfig.getTopics().get(topicName).getTopicKey(), queries);
     		if (response.getStatusCode().equals(HttpStatus.OK)) {
     			messages = response.getBody();
                 log.info("Successfully received messages from message broker with topic name "+topicName);

@@ -52,7 +52,7 @@ public class TextExtracterServiceImpl implements TextExtracterService {
 	public void extractTextAndSendToAiProcesser() {
 	    while(true) {
 	        try {
-	            List<Message<TextExtracterPayload>> messages = messageBrokerService.getMessage("textextracter");
+	            List<Message<TextExtracterPayload>> messages = messageBrokerService.getTextExtracterPayloadMessage("textextracter");
 	            if(messages.isEmpty()) {
 	                break;
 	            }
