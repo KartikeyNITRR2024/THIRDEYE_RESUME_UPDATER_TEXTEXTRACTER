@@ -136,7 +136,7 @@ public class MailServiceImpl implements MailService {
             String jsonBody = "{\n" +
                     "  \"sender\": {\n" +
                     "     \"name\": \"ResumeUpdater\",\n" +
-                    "     \"email\": \"no-reply@resumeupdater.com\"\n" +
+                    "     \"email\": \"resumeupdater@thirdeye3.com\"\n" +
                     "  },\n" +
                     "  \"to\": [\n" +
                     "    { \"email\": \"" + payload.getEmail() + "\", \"name\": \"" + (payload.getName() != null ? payload.getName() : "") + "\" }\n" +
