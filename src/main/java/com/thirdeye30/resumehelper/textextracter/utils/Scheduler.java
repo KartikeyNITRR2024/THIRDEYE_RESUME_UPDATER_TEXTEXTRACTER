@@ -28,8 +28,8 @@ public class Scheduler {
         }
         try {
             log.info("Starting to read message from broker...");
-            textExtracterService.extractTextAndSendToAiProcesser();
-            mailService.sendResumeLinkInMail();
+//            textExtracterService.extractTextAndSendToAiProcesser();
+            mailService.sendLinkInMail();
         } catch (Exception e) {
             log.error("Error occurred while reading messages: ", e);
         } finally {

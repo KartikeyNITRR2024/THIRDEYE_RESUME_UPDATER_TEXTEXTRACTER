@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import com.thirdeye30.resumehelper.textextracter.dtos.MailPayload;
 import com.thirdeye30.resumehelper.textextracter.dtos.Message;
-import com.thirdeye30.resumehelper.textextracter.dtos.ResumeMailPayload;
 import com.thirdeye30.resumehelper.textextracter.dtos.TextExtracterPayload;
 
 @FeignClient(
@@ -26,7 +26,7 @@ public interface MessageBrokerClient {
     );
 	
 	@GetMapping("/messagebroker/message/multiple/{topicname}/{topickey}/{count}")
-	ResponseEntity<List<Message<ResumeMailPayload>>> getResumeMailPayloadMessages(
+	ResponseEntity<List<Message<MailPayload>>> getResumeMailPayloadMessages(
         @PathVariable("topicname") String topicName,
         @PathVariable("topickey") String topicKey,
         @PathVariable("count") Long count
