@@ -238,25 +238,87 @@ public class MailServiceImpl implements MailService {
         }
     }
     
+//    private boolean attemptCourseLinkEmailSend(MailPayload payload) {
+//        try {
+//            StringBuilder htmlBody = new StringBuilder();
+//            htmlBody.append("<div style='font-family: Arial, sans-serif; padding: 20px; color: #333;'>");
+//            htmlBody.append("<h2>Course Recommendations for ").append(payload.getCompany() != null ? payload.getCompany() : "your application").append("</h2>");
+//            htmlBody.append("<p>Hello User,</p>");
+//            htmlBody.append("<p>To help you prepare for your upcoming interview, we have curated a list of important topics based on "+(payload.getCompany() != null ? payload.getCompany() : "Company")+" job description.</p>");
+//            addPriorityList(htmlBody, "High Priority Topics", payload.getHighPriority(), "#d32f2f");
+//            addPriorityList(htmlBody, "Medium Priority Topics", payload.getMediumPriority(), "#f57c00");
+//            addPriorityList(htmlBody, "Low Priority Topics", payload.getLowPriority(), "#388e3c");
+//
+//            htmlBody.append("<div style='margin-top: 30px;'>");
+//            htmlBody.append("<p>Click the link below to access your tailored course and start preparing:</p>");
+//            htmlBody.append("<a href='").append(payload.getCourseUrl()).append("' style='background-color: #2563eb; color: white; padding: 12px 20px; text-decoration: none; border-radius: 5px; font-weight: bold;'>Go to Course</a>");
+//            htmlBody.append("</div>");
+//
+//            htmlBody.append("<br/><hr style='border: 0; border-top: 1px solid #eee;'/><p>Regards,<br/><strong>Interview Prep Team</strong></p></div>");
+//
+//            return executeMailDispatch(payload.getEmail(), "User", "Your Interview Preparation Guide for " + (payload.getCompany() != null ? payload.getCompany() : "Company"), htmlBody.toString(), "interviewprep@thirdeye3.com", "Interview Prep");
+//        } catch (Exception innerEx) {
+//            log.error("Error formatting COURSE notification mail template for user: {}", payload.getEmail(), innerEx);
+//            return false;
+//        }
+//    }
+//    
+//    private void addPriorityList(StringBuilder sb, String title, List<String> items, String color) {
+//        if (items != null && !items.isEmpty()) {
+//            sb.append("<div style='margin-bottom: 20px;'>");
+//            sb.append("<h3 style='color: ").append(color).append("; margin-bottom: 5px;'>").append(title).append("</h3>");
+//            sb.append("<table style='width: 100%; border-collapse: collapse; border: 1px solid #ddd;'>");
+//            for (String item : items) {
+//                sb.append("<tr>");
+//                sb.append("<td style='padding: 8px; border-bottom: 1px solid #eee; font-size: 14px;'>").append(item).append("</td>");
+//                sb.append("</tr>");
+//            }
+//            sb.append("</table>");
+//            sb.append("</div>");
+//        }
+//    }
+    
     private boolean attemptCourseLinkEmailSend(MailPayload payload) {
         try {
+            String companyName = payload.getCompany() != null ? payload.getCompany() : "your target company";
+            
             StringBuilder htmlBody = new StringBuilder();
-            htmlBody.append("<div style='font-family: Arial, sans-serif; padding: 20px; color: #333;'>");
-            htmlBody.append("<h2>Course Recommendations for ").append(payload.getCompany() != null ? payload.getCompany() : "your application").append("</h2>");
-            htmlBody.append("<p>Hello User,</p>");
-            htmlBody.append("<p>To help you prepare for your upcoming interview, we have curated a list of important topics based on "+(payload.getCompany() != null ? payload.getCompany() : "Company")+" job description.</p>");
-            addPriorityList(htmlBody, "High Priority Topics", payload.getHighPriority(), "#d32f2f");
-            addPriorityList(htmlBody, "Medium Priority Topics", payload.getMediumPriority(), "#f57c00");
-            addPriorityList(htmlBody, "Low Priority Topics", payload.getLowPriority(), "#388e3c");
-
-            htmlBody.append("<div style='margin-top: 30px;'>");
-            htmlBody.append("<p>Click the link below to access your tailored course and start preparing:</p>");
-            htmlBody.append("<a href='").append(payload.getCourseUrl()).append("' style='background-color: #2563eb; color: white; padding: 12px 20px; text-decoration: none; border-radius: 5px; font-weight: bold;'>Go to Course</a>");
+            htmlBody.append("<!DOCTYPE html><html><body style='font-family: \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif; line-height: 1.6; color: #1e293b; background-color: #f8fafc; margin: 0; padding: 20px;'>");
+            
+            // Main Container Card
+            htmlBody.append("<div style='max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 20px; overflow: hidden; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);'>");
+            
+            // Header
+            htmlBody.append("<div style='background: linear-gradient(135deg, #4f46e5, #7c3aed); padding: 30px; text-align: center;'>");
+            htmlBody.append("<h1 style='color: #ffffff; margin: 0; font-size: 24px;'>AI Roadmap Generated</h1>");
             htmlBody.append("</div>");
 
-            htmlBody.append("<br/><hr style='border: 0; border-top: 1px solid #eee;'/><p>Regards,<br/><strong>Interview Prep Team</strong></p></div>");
+            // Body Content
+            htmlBody.append("<div style='padding: 30px;'>");
+            htmlBody.append("<p style='font-size: 16px; margin-bottom: 20px;'>Hello,</p>");
+            htmlBody.append("<p style='margin-bottom: 25px;'>To help you ace your interview at <strong>").append(companyName).append("</strong>, our AI engine has analyzed the requirements and curated the following preparation roadmap:</p>");
 
-            return executeMailDispatch(payload.getEmail(), "User", "Your Interview Preparation Guide for " + (payload.getCompany() != null ? payload.getCompany() : "Company"), htmlBody.toString(), "interviewprep@thirdeye3.com", "Interview Prep");
+            // Priority Lists
+            addPriorityList(htmlBody, "High Priority", payload.getHighPriority(), "#dc2626"); // Tailwind red-600
+            addPriorityList(htmlBody, "Medium Priority", payload.getMediumPriority(), "#d97706"); // Tailwind amber-600
+            addPriorityList(htmlBody, "Foundation", payload.getLowPriority(), "#059669"); // Tailwind emerald-600
+
+            // CTA Button
+            htmlBody.append("<div style='text-align: center; margin: 40px 0;'>");
+            htmlBody.append("<a href='").append(payload.getCourseUrl()).append("' style='background-color: #4f46e5; color: #ffffff; padding: 14px 28px; text-decoration: none; border-radius: 12px; font-weight: 700; font-size: 16px; display: inline-block; transition: background 0.3s;'>Access Your Course</a>");
+            htmlBody.append("</div>");
+
+            htmlBody.append("<p style='font-size: 14px; color: #64748b;'>Best of luck with your preparation!<br/><strong>The Interview Prep Team</strong></p>");
+            htmlBody.append("</div>");
+            
+            // Footer
+            htmlBody.append("<div style='background: #f1f5f9; padding: 20px; text-align: center; font-size: 12px; color: #94a3b8;'>");
+            htmlBody.append("© 2026 Interview Prep Platform. All rights reserved.");
+            htmlBody.append("</div>");
+            
+            htmlBody.append("</div></body></html>");
+
+            return executeMailDispatch(payload.getEmail(), "User", "Your AI Preparation Roadmap for " + companyName, htmlBody.toString(), "interviewprep@thirdeye3.com", "Interview Prep");
         } catch (Exception innerEx) {
             log.error("Error formatting COURSE notification mail template for user: {}", payload.getEmail(), innerEx);
             return false;
@@ -265,16 +327,28 @@ public class MailServiceImpl implements MailService {
     
     private void addPriorityList(StringBuilder sb, String title, List<String> items, String color) {
         if (items != null && !items.isEmpty()) {
-            sb.append("<div style='margin-bottom: 20px;'>");
-            sb.append("<h3 style='color: ").append(color).append("; margin-bottom: 5px;'>").append(title).append("</h3>");
-            sb.append("<table style='width: 100%; border-collapse: collapse; border: 1px solid #ddd;'>");
-            for (String item : items) {
-                sb.append("<tr>");
-                sb.append("<td style='padding: 8px; border-bottom: 1px solid #eee; font-size: 14px;'>").append(item).append("</td>");
-                sb.append("</tr>");
-            }
-            sb.append("</table>");
+            sb.append("<div style='margin-bottom: 25px;'>");
+            
+            // Title with a small colored accent bar
+            sb.append("<div style='display: flex; align-items: center; margin-bottom: 12px;'>");
+            sb.append("<div style='width: 4px; height: 18px; background-color: ").append(color).append("; border-radius: 2px; margin-right: 10px;'></div>");
+            sb.append("<h3 style='color: #1e293b; margin: 0; font-size: 18px;'>").append(title).append("</h3>");
             sb.append("</div>");
+
+            // Clean, borderless list container
+            sb.append("<div style='background-color: #f8fafc; border-radius: 12px; padding: 15px;'>");
+            for (int i = 0; i < items.size(); i++) {
+                String item = items.get(i);
+                // Add top border to all but the first item for separation
+                String style = "padding: 8px 0; font-size: 15px; color: #475569;" + 
+                               (i > 0 ? " border-top: 1px solid #e2e8f0;" : "");
+                
+                sb.append("<div style='").append(style).append("'>");
+                sb.append("• ").append(item);
+                sb.append("</div>");
+            }
+            sb.append("</div>"); // Close list container
+            sb.append("</div>"); // Close main wrapper
         }
     }
 
